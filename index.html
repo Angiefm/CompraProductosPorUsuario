@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+
+    <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>verificación</title>
+      <script>
+        var cedulasExistentes = ["1234567890", "0987654321", "1122334455"];
+        var productos = [
+          { id: 1, nombre: "Producto 1", precio: 50000 },
+          { id: 2, nombre: "Producto 2", precio: 20000 },
+          { id: 3, nombre: "Producto 3", precio: 450000 },
+          { id: 4, nombre: "Producto 4", precio: 10000 },
+          { id: 5, nombre: "Producto 5", precio: 20000 }
+        ];
+        var carrito = [];
+  
+        function validarCedula(){
+          var cedula = document.getElementById("cedula").value;
+          const formulario = document.getElementById("formRegistro");
+          const resultado = document.getElementById("resultado");
+          const listaProductos = document.getElementById("productos");
+  
+          listaProductos.innerHTML = "";
+  
+          formulario.style.display = "none";
+  
+          if(cedulasExistentes.includes(cedula)){
+            resultado.innerHTML = '<span style="color: red;">cédula ya existe en el sistema.</span>';
+          } else {
+            cedulasExistentes.push(cedula);
+            resultado.innerHTML = '<span style="color: green;">cédula válida y registrada exitosamente.</span>';
+            formulario.style.display = "block";
+            document.getElementById("cedulaForm").value = cedula;
+            mostrarProductos(); 
+          }
+        }
+  
+        function registrarUsuario(){
+          const nombre = document.getElementById("nombre").value;
+          const correo = document.getElementById("correo").value;
+          const cedula = document.getElementById("CedulaForm").value;
+          alert("usuario registrado: cédula: " + cedula + " nombre: " + nombre + " correo: " + correo);
+        }
+  
+        function mostrarProductos(){
+          const listaProductos = document.getElementById("productos");
+          listaProductos.innerHTML = "";
+  
+          productos.forEach(producto => {
+            const item = document.createElement("div");
+            item.classList.add("producto");
+            item.innerHTML = `
+              <p>${producto.nombre} - $${producto.precio.toLocaleString("es-CO")}</p>
+              <button onclick="agregarAlCarrito(${producto.id})">agregar al carrito 🛒</button>
+            `;
+            listaProductos.appendChild(item);
+          });
+        }
+  
+        function agregarAlCarrito(productId){
+          const producto = productos.find(p => p.id === productId);
+          if (producto) {
+            carrito.push(producto);
+            actualizarCarrito();
+          }
+        }
+  
+        function actualizarCarrito(){
+          const carritoDiv = document.getElementById("carrito");
+          carritoDiv.innerHTML = "<h3>carrito de compras</h3>";
+          let total = 0;
+          carrito.forEach(item => {
+            carritoDiv.innerHTML += `<p>${item.nombre} - $${item.precio.toLocaleString("es-CO")}</p>`;
+            total += item.precio;
+          });
+          carritoDiv.innerHTML += `<h3>total: $${total.toLocaleString("es-CO")}</h3>`;
+        }
+      </script>
+    </head>
+
+    
+    <body style="font-family: Arial; padding:20px">
+      <h1>verificación de cédula</h1>
+      <label for="cedula">ingrese su cédula:</label>
+      <input type="text" id="cedula" required><br><br>
+  
+      <button onclick="validarCedula();return false">validar</button>
+  
+      <div id="resultado" style="margin-top: 25px; font-size:20px;"></div>
+  
+      <div id="formRegistro" style="display: none; margin-top: 20px; padding: 10px; border: 1px solid #000000; background-color: rgb(233, 182, 255); border-radius: 1.5%;">
+        <h3>registro de usuario nuevo</h3>
+        <label>cédula</label><br>
+        <input type="text" id="cedulaForm" readonly><br><br>
+        <label>nombre</label><br>
+        <input type="text" id="nombre" required><br><br>
+        <label>email</label><br>
+        <input type="text" id="correo" required><br><br>
+        <button onclick="registrarUsuario()">registrar</button>
+      </div>
+  
+      <div id="productos" style="margin-top: 20px;"></div>
+  
+      <div id="carrito" style="margin-top: 20px;"></div>
+    </body>
+</html>
